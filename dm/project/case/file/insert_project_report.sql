@@ -1,0 +1,1 @@
+INSERT INTO ERDCLOUD_PROJECT_TEST.rpt_elproject_report(id, name, project_id, type, template_id, create_by, create_time, update_by, update_time, status, start_time, end_time, del_flag) VALUES (?,?,?, 1, '', 'SYS_E39B20EA11E7A81AC85B767C89C1', '2023-03-08 17:51:57', 'SYS_E39B20EA11E7A81AC85B767C89C1', '2023-03-08 17:51:57', 2, '2023-03-07 00:00:00', '2023-03-09 00:00:00', 0);
