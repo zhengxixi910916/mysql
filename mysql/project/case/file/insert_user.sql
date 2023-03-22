@@ -1,0 +1,1 @@
+insert into `sys_eluser` (`id`, `code`, `name`, `display_name`, `org_id`, `password`, `mobile`, `email`, `avatar`, `type`, `status`, `display_en`, `active`, `expiry_date`) values(%s,%s,%s,%s,%s,'0aca9d3b390c4f19d2e75baa463f5613a7762937e28022373173b803d548c51d','',%s,'/img/downLoad/801978531448c1d56a47643c22d79d7f?_=1619422923178','license','1',%s,'1',NULL);
