@@ -1,0 +1,26 @@
+
+
+
+def {{ item.apiKey }}(self, checker):
+    """
+    接口名称：{{ item.name }}
+    接口地址：{{ item.url }}
+    """
+    r = RequestService.call_{{item.method}}(apis.{{item.method}}("{{ item.apiKey }}"),
+    {%- if item["hasParams"] %}
+        {%- for param in item["params"] %}
+            {%- if item["params"][param] %}
+                {{- param }}
+                {{- "={"}}
+                {%- for one in item["params"][param] %}
+                    "{{ one.key }}": "{{ one.value }}"{{ one.tail }}  # {{ one.description}} - required: {{ one.required }}
+                {%- endfor %}
+                {{ "}"}}
+            {%- endif %}
+        {%- endfor %}
+    {%- else %}
+        {{- None }}
+    {%- endif %}
+    {{- ")" }}
+    apis.check(self, r, checker["code"], checker["success"])
+    return r

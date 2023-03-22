@@ -1,0 +1,27 @@
+
+def {{ item.apiKey }}(self, checker):
+    """
+    接口名称：{{ item.name }}
+    接口地址：{{ item.url }}
+    """
+    r = RequestService.call_{{item.method}}(apis.get("{{ item.apiKey }}", None), {{item.payload}}=
+    {%- if item["hasFormdata"] %}
+        {%- if item["strParam"] %}
+            {{item.params}}
+        {% else %}
+            {{- "{"}}
+            {%- for param in item.params %}
+                "{{ param.key }}": "{{ param.value }}"{{ param.tail }}
+            {%- endfor %}
+            {{- "}"}}
+        {%- endif %}
+    {%- else %}
+        {{- "{}" }}
+    {%- endif %}
+    {{- ")" }}
+    apis.check_success(self, r)
+    if checker is not None:
+        self.assertEqual(checker, r['res']["data"])
+    return r["res"]["data"]
+
+

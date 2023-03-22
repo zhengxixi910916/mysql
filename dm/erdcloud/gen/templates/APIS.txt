@@ -1,0 +1,8 @@
+from erdcloud.HttpClient import RequestService
+from erdcloud.erdApi import Api
+
+apis = Api({
+{%- for api in apis %}
+    "{{api.apiKey}}": "{{api.url}}",  # {{api.desc}}
+{%- endfor %}
+})
