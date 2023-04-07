@@ -2,7 +2,7 @@
   "name": "项目管理",
   "service_name": "erdcloud-project-app",
   "allinone": "erdcloud-project-app",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "app_name": "proj",
   "ignore_apis": [
     "/proj/druid/{stats}",
