@@ -9,7 +9,7 @@ from erdcloud.erdApi import Api
 
 from project.api.ApiIssueManage import delete_document_file
 
-import xlwt
+
 import random
 '''
 项目任务
@@ -17,10 +17,12 @@ import random
 # 获取上一级目录
 dir_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 dir_document = dir_path + r'/document'
+dir_document1 = dir_path + r'/api/file'
+
 times = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime(time.time()))
 file_name = "task_" + times + ".xlsx"
 file_path = dir_document + '/' + file_name
-file_path2 = dir_document + '/' + "task_import.xlsx"
+file_path1 = dir_document1 + '/'+'project_plan_import.xlsx'
 
 apis = Api({
     "search_business": "/plan/$VERSION$/api/list",  # 通用查询逻辑
@@ -416,17 +418,17 @@ def import_business(self, project_id=None, checker=None):
     context = com.get_context()
     api_path = com.get_host() + context + apis.get("import_business")
 
-    self.book = xlwt.Workbook(encoding='utf-8', style_compression=0)
-    self.sheet = self.book.add_sheet('计划导入', cell_overwrite_ok=True)
-    col = ('编码', '名称', '资源角色')
-    for i in range(0, 3):
-        self.sheet.write(0, i, col[i])
-    task_code = self.sheet.write(1, 0, str(random.randint(10000,99999)))
-    task_name = self.sheet.write(1, 1, "task"+times)
-    task_role = self.sheet.write(1, 2, "项目成员")
-    self.book.save(file_path2)
+    # self.book = xlwt.Workbook(encoding='utf-8', style_compression=0)
+    # self.sheet = self.book.add_sheet('计划导入', cell_overwrite_ok=True)
+    # col = ('编码', '名称', '资源角色')
+    # for i in range(0, 3):
+    #     self.sheet.write(0, i, col[i])
+    # task_code = self.sheet.write(1, 0, str(random.randint(10000,99999)))
+    # task_name = self.sheet.write(1, 1, "task"+times)
+    # task_role = self.sheet.write(1, 2, "项目成员")
+    # self.book.save(file_path2)
 
-    with open(file_path2, 'rb') as file:
+    with open(file_path1, 'rb') as file:
         file = {'file': file}
         data = {
             "projectId": project_id,
@@ -645,10 +647,11 @@ def update_checklist(self, checkid, objectId, state, checker=None):
         "objectId": objectId,
         "state": state
     }])
-    apis.check_success(self, r)
     if checker is not None:
-        self.assertEqual(checker, r["res"]["data"])
-    return r['res']["data"]
+        apis.check(self, r, checker["code"], checker["success"])
+    else:
+        apis.check_success(self, r)
+    return r
 
 
 def delete_checklist(self, id, objectId, attachmentId=None, checker=None):
