@@ -8,8 +8,6 @@ from erdcloud.HttpClient import RequestService
 from erdcloud.erdApi import Api
 from erdcloud.HttpClient import commonServer
 
-import xlwt
-import random
 
 """
 需求管理、需求管理-检查项|标签|成员
@@ -18,9 +16,10 @@ import random
 # 获取上一级目录
 dir_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 dir_document = dir_path + r'/document'
+dir_document1 = dir_path + r'/api/file'
 times = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime(time.time()))
 file_name = dir_document + r"/export_require_tem" + times + ".xlsx"
-file_name2 = dir_document + '/' + "require_import.xlsx"
+file_name1 = dir_document1 + '/' + "project_requirement_import.xlsx"
 apis = Api({
     "search_business": "/req/$VERSION$/api/list",  # 通用查询逻辑
     "select_business_export": "/req/$VERSION$/export",  # 导出业务数据
@@ -188,20 +187,19 @@ def import_business(self, project_id, checker=None):
     context = commonServer.get_context()
     api_path = commonServer.get_host() + context + apis.get("import_business")
 
-    self.book = xlwt.Workbook(encoding='utf-8', style_compression=0)
-    self.sheet = self.book.add_sheet('需求导入',cell_overwrite_ok=True)
-    col = ('编码', '名称', '提出人', '创建人')
-    for i in range(0, 4):
-        self.sheet.write(0, i, col[i])
-    require_code = self.sheet.write(1, 0, str(random.randint(10000,99999)))
-    require_name = self.sheet.write(1, 1, "require"+times)
-    require_submitby = self.sheet.write(1, 2, "admin")
-    require_create_by = self.sheet.write(1, 3, "admin")
-    self.book.save(file_name2)
+    # self.book = xlwt.Workbook(encoding='utf-8', style_compression=0)
+    # self.sheet = self.book.add_sheet('需求导入',cell_overwrite_ok=True)
+    # col = ('编码', '名称', '提出人', '创建人')
+    # for i in range(0, 4):
+    #     self.sheet.write(0, i, col[i])
+    # require_code = self.sheet.write(1, 0, str(random.randint(10000,99999)))
+    # require_name = self.sheet.write(1, 1, "require"+times)
+    # require_submitby = self.sheet.write(1, 2, "admin")
+    # require_create_by = self.sheet.write(1, 3, "admin")
+    # self.book.save(file_name2)
+    #
 
-
-
-    with open(file_name2, 'rb') as file:
+    with open(file_name1, 'rb') as file:
         file = {'file': file}
         data = {
             "projectId": project_id,

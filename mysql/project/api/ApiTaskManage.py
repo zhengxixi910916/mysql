@@ -10,7 +10,6 @@ from erdcloud.erdApi import Api
 from project.api.ApiIssueManage import delete_document_file
 
 
-import random
 '''
 项目任务
 '''
