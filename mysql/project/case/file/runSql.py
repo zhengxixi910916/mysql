@@ -16,14 +16,14 @@ class DataBaseOperation:
         self.project_id = ""  # 项目ID
         self.project_report_id = ""  # 项目报告ID
         self.project_name = ""  # 项目名称
-        self.viewid_id = "de2d00fcd8712c712dd749364f05aa4b"  # 视图ID
+        self.viewid_id = "292e78b105b44f2d9eb9d95fd2270251"  # 视图ID
         self.sysCalendar_id = uuid.uuid1().hex  # 系统日历ID
         self.projCalendar_id = uuid.uuid1().hex  # 项目日历ID
         self.document_id = uuid.uuid1().hex  # 文档ID
         self.baseline_id = "cdfaef81e6326685af761d5c7313252f"  # 基线ID
         self.object_id = uuid.uuid1().hex  # 对象ID
         self.agenda_id = uuid.uuid1().hex  # 日程ID
-        self.task_view_id = "de2d00fcd8712c712dd749364f05aa4b"  # 计划ID
+        self.task_view_id = "292e78b105b44f2d9eb9d95fd2270251"  # 计划ID
         self.require_view_id = "513345ee2219415a94dab80991614fe6"  # 需求ID
         self.issue_view_id = "cb73735437c14de381294291bc1ee32d"  # 问题ID
         self.risk_view_id = "fa2fb0892fb74ef9acc584c4a7ae9dd9"  # 风险ID
