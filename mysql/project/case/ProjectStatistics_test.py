@@ -180,6 +180,14 @@ class CustomProject(unittest.TestCase):
                                                    project_ids=CustomProject.project_id
                                                    )
 
+    def test_2000_deleteProjectUsingDELETE(self):
+        """
+        接口名称：删除项目
+        接口地址：/proj/$VERSION$/{id}
+        """
+        ApiProject.deleteProjectUsingDELETE(self, project_id=CustomProject.project_id)
+
+
 
 if __name__ == "__main__":
     unittest.main()

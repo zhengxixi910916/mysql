@@ -457,6 +457,8 @@ class Budget(unittest.TestCase):
         # /budget/$VERSION$/template/delete
         del_budget_tem = ApiBudget.del_budget_tem(self, temid=Budget.budget_template_id)
         print(del_budget_tem)
+        # 删除项目
+        ApiProject.deleteProjectUsingDELETE(self, project_id=Budget.project_id)
 
 
 

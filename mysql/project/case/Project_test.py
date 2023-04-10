@@ -132,13 +132,15 @@ class Project(unittest.TestCase):
                                       project_id=db.project_id
                                       )
 
+    @unittest.skip('废弃不用')
     def test_0200_getBascDataByTypeUsingGET(self):
         """
         接口名称：获取数据字典
-        接口地址：/proj/$VERSION$/project/dict/fuzzy/item/list
+        接口地址：/proj/$VERSION$/project/dict
         """
         ApiProject.getBascDataByTypeUsingGET(self,
-                                             project_id=Project.project_id)
+                                             attribute="lable",
+                                             type="common")
 
     def test_0210_selectAvlbFieldListUsingGET_2(self):
         """

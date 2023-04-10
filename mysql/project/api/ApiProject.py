@@ -488,17 +488,14 @@ def updateProjectUsingPUT(self, project_code, project_id, project_name, checker=
         return r
 
 
-def getBascDataByTypeUsingGET(self, project_id, checker=None):
+def getBascDataByTypeUsingGET(self, attribute, type, checker=None):
     """
     接口名称：获取数据字典
-    接口地址：/proj/$VERSION$/project/dict/fuzzy/item/list
+    接口地址：/proj/$VERSION$/project/dict
     """
     r = RequestService.call_get(apis.get("getBascDataByTypeUsingGET"), params={
-        "fuzzyKey": "",
-        "orderBy":"sort",
-        "sortBy":"asc",
-        "contextId": project_id,
-        "contextType": "Project",
+        "attribute": attribute,  # 附加属性 - required: False
+        "type": type,  # 类型 - required: False
     }, )
     apis.check_success(self, r)
     if checker is not None:

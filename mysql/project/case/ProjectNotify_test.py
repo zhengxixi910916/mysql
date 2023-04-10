@@ -8,19 +8,18 @@ class ProjectNotify(unittest.TestCase):
     project_id = ''
     config_id = ''
 
-    def setUp(self) -> None:
 
-        project_name = "project_" + time.strftime('%Y%m%d', time.localtime())
-        addProjectUsingPOST_1 = ApiProject.addProjectUsingPOST_1(self, name=project_name)
-        print(addProjectUsingPOST_1)
-        ProjectNotify.project_id = addProjectUsingPOST_1.get('id')
-        pass
 
     def test_0100_filterListUsingGET(self):
         """
         接口名称：消息通知配置列表
         接口地址：/proj/$VERSION$/msg/v2/configure/list/{project_id}
         """
+        # 新增项目
+        project_name = "project_" + time.strftime('%Y%m%d', time.localtime())
+        addProjectUsingPOST_1 = ApiProject.addProjectUsingPOST_1(self, name=project_name)
+        print(addProjectUsingPOST_1)
+        ProjectNotify.project_id = addProjectUsingPOST_1.get('id')
         ApiProjectNotify.filterListUsingGET(self,
                                             project_id=ProjectNotify.project_id
                                             )
@@ -91,11 +90,9 @@ class ProjectNotify(unittest.TestCase):
         ApiProjectNotify.deleteNotifyConfigsUsingDELETE(self,
                                                         configid=ProjectNotify.config_id)
 
-    def tearDown(self) -> None:
         # 删除项目
         deleteProjectUsingDELETE = ApiProject.deleteProjectUsingDELETE(self, project_id=ProjectNotify.project_id)
         print(deleteProjectUsingDELETE)
-        # db.delete_sql()
-        pass
+
 if __name__ == '__main__':
     unittest.main()

@@ -20,6 +20,7 @@ class ProjectReport(unittest.TestCase):
         接口名称：创建项目报告
         接口地址：/rpt/$VERSION$/report
         """
+        # 新增项目
         project_name = "project_" + time.strftime('%Y%m%d', time.localtime())
         addProjectUsingPOST_1 = ApiProject.addProjectUsingPOST_1(self, name=project_name)
         print(addProjectUsingPOST_1)

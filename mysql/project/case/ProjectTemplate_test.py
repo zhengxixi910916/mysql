@@ -111,7 +111,9 @@ class ProjectTemplate(unittest.TestCase):
         ApiProjectTemplate.deleteTemplateUsingDELETE(self,
                                                      id=ProjectTemplate.TemplateId
                                                      )
-
+        # 删除项目
+        deleteProjectUsingDELETE = ApiProject.deleteProjectUsingDELETE(self, project_id=ProjectTemplate.project_id)
+        print(deleteProjectUsingDELETE)
 
 if __name__ == '__main__':
     unittest.main()
