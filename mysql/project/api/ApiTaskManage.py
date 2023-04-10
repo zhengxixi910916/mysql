@@ -286,27 +286,24 @@ def get_duration_by_cal(self, project_id, startDate, finishDate, duration=None, 
     return r['res']["data"]
 
 
-def execute_task(self, task_id,  project_id, checker=None):
+def execute_task(self, task_id, project_id, checker=None):
     """
     接口名称：责任人开始执行任务
     接口地址：/plan/$VERSION$/executetask/{id}
     """
-    r = RequestService.call_put(apis.put("execute_task", task_id),
-                                json={"criticalFlag": 0, "flexAttrs": {"testAAA": "0", "testTest": None},
-                                      "labelIds": [], "sop": "", "isCutted": 0,
-                                      "id": task_id, "state": "PENDING", "leafNode": "false",
-                                      "canBeCutted": 1, "taskCheckLists": [], "name": "Task_160800",
-                                      "lifecycleTemplateId": "ac56c36a892d54fc626f191b9d12e3da",
-                                      "projectId": project_id,
-                                      "predecessorLink": "[{\"PredecessorUID\":\"135e0f82f1782cf07c67f7efdaf49d4c\",\"Type\":\"1\",\"LinkLag\":\"0\",\"_index\":\"0\",\"_uid\":\"e5e3bd22489dc377ec6439604a0e0959\"}]",
-                                      "code": "1", "deliverVos": [], "description": "", "taskInput": "",
-                                      "updateBy": "SYS_E39B20EA11E7A81AC85B767C89C1", "attachmentList": [],
-                                      "favoritesFlag": "false", "responsibleIds": ["SYS_E39B20EA11E7A81AC85B767C89C1"],
-                                      "milestoneFlag": 0, "workload": "", "percentComplete": "0", "taskOutput": "",
-                                      "summaryFlag": "0", "parentId": -1,
-                                      "createBy": "SYS_E39B20EA11E7A81AC85B767C89C1", "resAssignments": "MEMBER",
-                                      "orderCode": "1001", "stageFlag": 0, "newRecord": "false", "taskLabelList": [],
-                                      "testAAA": "0", "testTest": None})
+    r = RequestService.call_put(apis.get("execute_task", task_id),
+                                json={"criticalFlag": 0, "flexAttrs": {}, "labelIds": [], "sop": "", "isCutted": 0,
+                                       "id": task_id, "state": "PENDING", "leafNode": "false",
+                                       "canBeCutted": 1, "taskCheckLists": [], "name": "AutoPlan",
+                                       "lifecycleTemplateId": "2914ebce62ac09fb7aebddbac52f5508",
+                                       "projectId": project_id, "code": "1", "deliverVos": [],
+                                       "description": "", "taskInput": "",
+                                       "updateBy": "SYS_E39B20EA11E7A81AC85B767C89C1", "attachmentList": [],
+                                       "favoritesFlag": "false", "responsibleIds": ["SYS_E39B20EA11E7A81AC85B767C89C1"],
+                                       "milestoneFlag": 0, "workload": "", "percentComplete": "0", "taskOutput": "",
+                                       "summaryFlag": "0", "parentId": -1,
+                                       "createBy": "SYS_E39B20EA11E7A81AC85B767C89C1", "resAssignments": "PM",
+                                       "orderCode": "1001", "stageFlag": 0, "newRecord": "false", "taskLabelList": []})
     if checker is not None:
         apis.check(self, r, checker["code"], checker["success"])
     else:

@@ -304,15 +304,15 @@ def get_durationrecord_using_get(self, checker=None):
     return r
 
 
-def execute_task_using_put(self, checker=None):
+def execute_task_using_put(self, task_id, checker=None):
     """
     接口名称：责任人开始执行任务
     接口地址：/plan/$VERSION$/executetask/{id}
     """
-    r = RequestService.call_put(apis.get("executeTaskUsingPUT", None), json={
+    r = RequestService.call_put(apis.get("executeTaskUsingPUT", task_id), json={
         "task": ""  # 任务对象 - required: False
-    }, path={
-        "id": ""  # 任务id - required: False
+    }, params={
+        "id": task_id  # 任务id - required: False
     }, )
     if checker is not None:
         apis.check(self, r, checker["code"], checker["success"])

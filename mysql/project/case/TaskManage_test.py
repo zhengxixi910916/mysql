@@ -5,7 +5,7 @@ import random
 import time
 import unittest
 
-from project.api import ApiProject, ApiRiskManage, ApiTaskManage,ApiProjectTemplate
+from project.api import ApiProject, ApiRiskManage, ApiTaskManage,ApiProjectTemplate,ApiProjectTasks
 
 from project.case.file.runSql import db
 
@@ -30,7 +30,7 @@ class TaskManage(unittest.TestCase):
     sum_id = ""
     working_hour_id = ""
     project_template_id = ""
-
+    plan_data = ''
     @classmethod
     def setUpClass(cls):
         pass
@@ -45,16 +45,45 @@ class TaskManage(unittest.TestCase):
         接口名称：创建任务
         接口地址：/plan/$VERSION$/task
         """
+
         # 新增项目
         project_name = "project_" + time.strftime('%Y%m%d', time.localtime())
         r = ApiProject.addProjectUsingPOST_1(self, name=project_name)
         print(r)
         TaskManage.project_id = r["id"]
-        TaskManage.task_name = "Task_" + time.strftime('%H%M%S', time.localtime())
-        add_task_result = ApiTaskManage.add_task(self, project_id=TaskManage.project_id,
-                                                 startDate=None,
-                                                 finishDate=None)
 
+
+        TaskManage.plan_data = {
+            "name": "AutoPlan",
+            "startDate": "",
+            "finishDate": "",
+            "milestoneFlag": "0",
+            "state": "",
+            "criticalFlag": "0",
+            "canBeCutted": "1",
+            "stageFlag": "0",
+            "description": "",
+            "percentComplete": "",
+            "projectId": TaskManage.project_id,
+            "parentId": "",
+            "actualFinishDate": "",
+            "workload": "",
+            "duration": "",
+            "resAssignments": "PM",
+            "sop": "",
+            "taskInput": "",
+            "taskOutput": "",
+            "fileIds": "",
+            "summaryFlag": "0",
+            "taskMemberList[0].roleKey": "HANDLEPERSON",
+            "taskMemberList[0].userId": "SYS_E39B20EA11E7A81AC85B767C89C1",
+            "taskMemberList[1].roleKey": "IDENTIFY",
+            "taskMemberList[1].userId":"",
+            "labelLinkIds": ""
+        }
+
+        TaskManage.plan_data['projectId'] = TaskManage.project_id
+        add_task_result = ApiProjectTasks.add_task_using_post_1(self, data=TaskManage.plan_data)
         print(add_task_result)
         TaskManage.task_id = add_task_result.get("id")
         print("task_id:", TaskManage.task_id)
@@ -173,6 +202,7 @@ class TaskManage(unittest.TestCase):
                                                              "PENDING"
                                                              )
         print(editbatch_task_result)
+
 
     def test_1500_add_checklist(self):
         """
@@ -475,7 +505,7 @@ class TaskManage(unittest.TestCase):
         # /task/v1/myCare
         care_task_result = ApiTaskManage.care_task(self,
                                                    TaskManage.task_id,
-                                                   TaskManage.task_name
+                                                   "AutoPlan"
                                                    )
         print(care_task_result)
 
@@ -588,14 +618,6 @@ class TaskManage(unittest.TestCase):
             plan_id_list.append(plan_list_records[i]['id'])
         TaskManage.plan_id_list = plan_id_list
 
-    def test_7500_execute_task(self):
-        """
-        接口名称：责任人开始执行任务
-        接口地址：/plan/$VERSION$/executetask/{id}
-        """
-        ApiTaskManage.execute_task(self,
-                                   task_id=TaskManage.task_id,
-                                   project_id=TaskManage.project_id)
 
     def test_7600_copy_template_task(self):
         """
@@ -608,7 +630,17 @@ class TaskManage(unittest.TestCase):
         TaskManage.project_template_id = r["id"]
         ApiTaskManage.copy_template_task(self, project_id=TaskManage.project_id,template_id=TaskManage.project_template_id)
 
-    def test_7700_close_validate(self):
+
+    def test_7700_execute_task(self):
+        """
+        接口名称：责任人开始执行任务
+        接口地址：/plan/$VERSION$/executetask/{id}
+        """
+        ApiTaskManage.execute_task(self,
+                                   task_id=TaskManage.task_id,
+                                   project_id=TaskManage.project_id)
+
+    def test_7800_close_validate(self):
         """
         接口名称：任务关闭校验接口
         接口地址：/plan/$VERSION$/{id}/close/validate
@@ -616,7 +648,6 @@ class TaskManage(unittest.TestCase):
         ApiTaskManage.close_validate(self,
                                      task_id=TaskManage.task_id
                                      )
-
 
     def test_7900_close_task(self):
         """
