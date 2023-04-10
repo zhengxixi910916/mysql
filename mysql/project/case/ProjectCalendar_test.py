@@ -12,11 +12,6 @@ class ProjectCalendar(unittest.TestCase):
     holiday_id = ""
     project_id = ""
 
-    @classmethod
-    def tearDownClass(cls):
-        # db.delete_sql()
-        pass
-
 
     def test_0100_updateCalendarUsingPUT(self):
         """

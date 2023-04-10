@@ -12,14 +12,6 @@ class Dimision(unittest.TestCase):
     project_id = ''
     issue_id = ''
 
-    def setUp(self) -> None:
-
-        # 创建项目
-        project_name = "project_" + time.strftime('%Y%m%d', time.localtime())
-        addProjectUsingPOST_1 = ApiProject.addProjectUsingPOST_1(self, name=project_name)
-        print(addProjectUsingPOST_1)
-        Dimision.project_id = addProjectUsingPOST_1.get('id')
-        pass
 
     def test_0100_getDimissionInfoByUserIdUsingGET(self):
         """
@@ -36,6 +28,11 @@ class Dimision(unittest.TestCase):
         接口名称：遗留事项详情列表
         接口地址：/proj/$VERSION$/dimission/{userId}/info
         """
+        # 创建项目
+        project_name = "project_" + time.strftime('%Y%m%d', time.localtime())
+        addProjectUsingPOST_1 = ApiProject.addProjectUsingPOST_1(self, name=project_name)
+        print(addProjectUsingPOST_1)
+        Dimision.project_id = addProjectUsingPOST_1.get('id')
         # 新增问题单
         issue_name = "issue_" + time.strftime('%H%M%S', time.localtime())
         add_issue_result = ApiIssueManage.add_issue(self,
@@ -74,12 +71,11 @@ class Dimision(unittest.TestCase):
         delete_issue_result = ApiIssueManage.delete_issue(self, Dimision.issue_id)
         print(delete_issue_result)
 
-    def tearDown(self) -> None:
         # 删除项目
         deleteProjectUsingDELETE = ApiProject.deleteProjectUsingDELETE(self, project_id=Dimision.project_id)
         print(deleteProjectUsingDELETE)
         # db.delete_sql()
-        pass
+
 
 if __name__ == '__main__':
     unittest.main()

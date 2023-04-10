@@ -13,17 +13,15 @@ class CustomProject(unittest.TestCase):
     orgId = db.org_id
 
 
-    def setUp(self) -> None:
-
-        project_name = "project_" + time.strftime('%Y%m%d', time.localtime())
-        addProjectUsingPOST_1 = ApiProject.addProjectUsingPOST_1(self, name=project_name)
-        print(addProjectUsingPOST_1)
-        CustomProject.project_id = addProjectUsingPOST_1.get('id')
-        pass
 
 
     def test_0100_Statistics(self):
         """项目管理-统计"""
+        # 新增项目
+        project_name = "project_" + time.strftime('%Y%m%d', time.localtime())
+        addProjectUsingPOST_1 = ApiProject.addProjectUsingPOST_1(self, name=project_name)
+        print(addProjectUsingPOST_1)
+        CustomProject.project_id = addProjectUsingPOST_1.get('id')
         ApiProjectStatistics.Statistics(self,
                                         project_id=CustomProject.project_id
                                         )

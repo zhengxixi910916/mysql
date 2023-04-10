@@ -15,25 +15,15 @@ class ProjectReport(unittest.TestCase):
     org_id = db.org_id
     report_id = db.project_report_id
 
-    def setUp(self) -> None:
-
-        project_name = "project_" + time.strftime('%Y%m%d', time.localtime())
-        addProjectUsingPOST_1 = ApiProject.addProjectUsingPOST_1(self, name=project_name)
-        print(addProjectUsingPOST_1)
-        ProjectReport.project_id = addProjectUsingPOST_1.get('id')
-        pass
-
-    @classmethod
-    def tearDownClass(cls):
-        # db.delete_sql()
-        pass
-
     def test_0100_addReportUsingPOST(self):
         """
         接口名称：创建项目报告
         接口地址：/rpt/$VERSION$/report
         """
-
+        project_name = "project_" + time.strftime('%Y%m%d', time.localtime())
+        addProjectUsingPOST_1 = ApiProject.addProjectUsingPOST_1(self, name=project_name)
+        print(addProjectUsingPOST_1)
+        ProjectReport.project_id = addProjectUsingPOST_1.get('id')
         r2 = ApiProjectReport.addReportUsingPOST(self,
                                             project_id=ProjectReport.project_id,
                                             user_id=ProjectReport.user_id)
@@ -84,13 +74,10 @@ class ProjectReport(unittest.TestCase):
         ApiProjectReport.delReportUsingDELETE(self,
                                               ids=[db.project_report_id]
                                               )
-
-    def tearDown(self) -> None:
         # 删除项目
         deleteProjectUsingDELETE = ApiProject.deleteProjectUsingDELETE(self, project_id=ProjectReport.project_id)
         print(deleteProjectUsingDELETE)
-        # db.delete_sql()
-        pass
+
 
 if __name__ == "__main__":
     unittest.main()

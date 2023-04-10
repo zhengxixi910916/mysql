@@ -9,6 +9,7 @@ import json
 import random
 
 class Virtualorg(unittest.TestCase):
+    layout_id = ''
     arr_id = ''
     @classmethod
     def setUpClass(cls):
@@ -46,8 +47,8 @@ class Virtualorg(unittest.TestCase):
         str = int(time.time())
         # 创建数据库字段
         data = {
-            "entityAttrs[0].attrName": f"test_1657511904",
-            "entityAttrs[0].attrKey": f"ext_1657511904",
+            "entityAttrs[0].attrName": "xxxx",
+            "entityAttrs[0].attrKey": "ext_xxxx",
             "entityAttrs[0].attrType": "varchar",
             "entityAttrs[0].typeLength": 32,
             "entityAttrs[0].defaultValue": ""
@@ -56,27 +57,26 @@ class Virtualorg(unittest.TestCase):
 
         # 创建属性
         data = {
-            "code": f"ATTR{str}",
-            "displayName": f"属性{str}",
-            "paramName": "param",
-            "fieldColumn": f"ext_1657511904",
+            "code": "xxxxxx",
+            "displayName": "嘻嘻测试属性",
+            "paramName": "xxxxxx",
+            "fieldColumn": "ext_xxxx",
             "fieldEdit": "",
             "fieldType": "text-input",
             "logicType": 1,
             "defaultField": 0,
             "oper": "like,between,eq",
             "id": "",
-            "name": "test" + time.strftime("%Y%m%d%H%M%S", time.localtime()),
-            "businessType": "erd.cloud.project.dto.EtProject",
+            "name": "xxxxxx",
+            "businessType": "erd.cloud.issue.dto.EtIssue",
             "typedefId": 4,
             "advancedSearch": 1,
             "typeConfig": '''{"attrType":"base","sort":true,"fieldEdit":"","advancedSearch":true,"mpxIndex":""}'''
         }
-        print(data)
         r = ApiCustomBusinessTypeManager.save_attr_using(data)
+        print(r)
+        Virtualorg.arr_id = r['res']['data']['id']
         self.assertEqual("200", r["code"])
-        Virtualorg.arr_id = r["res"]["data"]["id"]
-
 
     def test_00400_get_attr_using(self):
         """
@@ -84,7 +84,7 @@ class Virtualorg(unittest.TestCase):
         接口地址：/proj/basis/$VERSION$/type/attr/{id}
         """
         r = ApiCustomBusinessTypeManager.get_attr_using(self,
-                                                        get_id=ApiCustomBusinessTypeManager.id
+                                                        get_id=Virtualorg.arr_id
                                                         )
 
     def test_00500_update_attr_using(self):
@@ -93,29 +93,22 @@ class Virtualorg(unittest.TestCase):
         接口地址：/proj/basis/$VERSION$/type/attr/{id}
         """
         r = ApiCustomBusinessTypeManager.update_attr_using(self,
-                                                           update_id=ApiCustomBusinessTypeManager.id,
+                                                           update_id=Virtualorg.arr_id,
                                                            dto={
-                                                               "active": 0,
                                                                "advancedSearch": 0,
-                                                               "businessType": "",
-                                                               "code": "",
-                                                               "defaultField": "",
-                                                               "defaultSort": 0,
-                                                               "displayName": "",
-                                                               "exportField": "",
-                                                               "fieldColumn": "",
-                                                               "fieldType": "",
-                                                               "filterType": "",
-                                                               "logicType": "",
-                                                               "name": "",
-                                                               "oper": "",
-                                                               "paramName": "",
-                                                               "screenField": "",
-                                                               "screenOper": "",
-                                                               "typeConfig": "",
-                                                               "typeLength": "",
-                                                               "typedefId": "",
-                                                               "value": ""
+                                                               "businessType": "erd.cloud.issue.dto.EtIssue",
+                                                               "code": "xxxxxx",
+                                                               "defaultField": "0",
+                                                               "displayName": "嘻嘻测试属性",
+                                                               "fieldColumn": "ext_xxxx",
+                                                               "fieldEdit": "",
+                                                               "fieldType": "text-input",
+                                                               "flexAttrs": {},
+                                                               "name": "xxxxxx",
+                                                               "oper": "like,between,eq",
+                                                               "paramName": "xxxxxx",
+                                                               "typeConfig": "{\"attrType\":\"base\",\"sort\":true,\"fieldEdit\":\"\",\"advancedSearch\":true,\"mpxIndex\":\"\",\"fieldType\":\"varchar\"}",
+                                                               "typedefId": "4",
                                                            }
                                                            )
         print(r)
@@ -137,8 +130,8 @@ class Virtualorg(unittest.TestCase):
         """
         data = {
             "name": f"布局{int(time.time())}",
-            "projectType": -1,
-            "tplType": "update",
+            "projectType": "ITProject",
+            "tplType": "create",
             "template": '',
             "contextId": '',
             "contextType": "system",
@@ -159,46 +152,41 @@ class Virtualorg(unittest.TestCase):
             "typeDef.icon": '',
             "typeDef.instantiable": 1
         }
-        res = ApiCustomBusinessTypeManager.save_layout_using(self, data=data)
+        r = ApiCustomBusinessTypeManager.save_layout_using(self, data=data)
 
-        self.assertEqual("200", res["code"])
+        Virtualorg.layout_id = r['res']['data']['id']
+
+        self.assertEqual("200", r["code"])
 
     def test_00800_get_layout_by(self):
         """
         接口名称：获取属性布局详情
         接口地址：/proj/basis/$VERSION$/type/layout/{id}
         """
-        # 创建布局
-        layout_id, layout_name = ApiCustomBusinessTypeManager.create_default_layout(self)
 
         # 查看布局详情
         data = {"_": "1656987163698"}
-        r = ApiCustomBusinessTypeManager.get_layout_by(layout_id, data)
+        r = ApiCustomBusinessTypeManager.get_layout_by(Virtualorg.layout_id, data)
         self.assertEqual("200", r["code"])
-        # 删除布局
-        ApiCustomBusinessTypeManager.del_layout_using1(layout_id)
+        # # 删除布局
+        # ApiCustomBusinessTypeManager.del_layout_using1(layout_id)
 
     def test_00900_enable_layout_using(self):
         """
         接口名称：启用类型布局
         接口地址：/proj/$VERSION$/type/layout/{id}
         """
-        # 创建布局
-        layout_id, layout_name = ApiCustomBusinessTypeManager.create_default_layout(self)
         # 启用布局
-        r = ApiCustomBusinessTypeManager.enable_layout_using(layout_id)
+        r = ApiCustomBusinessTypeManager.enable_layout_using(Virtualorg.layout_id)
         self.assertEqual("200", r["code"])
-
-        # 删除布局
-        ApiCustomBusinessTypeManager.del_layout_using1(layout_id)
 
     def test_01000_update_layout_using1(self):
         """
         接口名称：更新类型布局
         接口地址：/proj/basis/$VERSION$/type/layout/{id}
         """
-        # 创建布局
-        layout_id, layout_name = ApiCustomBusinessTypeManager.create_default_layout(self)
+        # # 创建布局
+        # layout_id, layout_name = ApiCustomBusinessTypeManager.create_default_layout(self)
         # 更新布局-用例
         data = {
             "tplJson": "{}",
@@ -219,25 +207,13 @@ class Virtualorg(unittest.TestCase):
             "typeDef.description": "问题定义",
             "typeDef.icon": "",
             "typeDef.instantiable": 1,
-            "name": layout_name
+            "name": "update"+f"布局{int(time.time())}"
         }
-        r = ApiCustomBusinessTypeManager.update_layout_using1(self, layout_id=layout_id, json=data)
+        r = ApiCustomBusinessTypeManager.update_layout_using1(self, layout_id=Virtualorg.layout_id, json=data)
         self.assertEqual("200", r["code"])
         print(r)
-        # 删除布局
-        ApiCustomBusinessTypeManager.del_layout_using1(layout_id)
 
-    def test_01100_del_layout_using1(self):
-        """
-        接口名称：删除类型布局
-        接口地址：/proj/basis/$VERSION$/type/layout/{id}
-        """
-        # 创建布局
-        layout_id, layout_name = ApiCustomBusinessTypeManager.create_default_layout(self)
-        # 删除布局
-        r = ApiCustomBusinessTypeManager.del_layout_using1(layout_id)
-        self.assertEqual("200", r["code"])
-        print(r)
+
 
     def test_01200_get_layout_by1(self):
         """
@@ -295,6 +271,17 @@ class Virtualorg(unittest.TestCase):
         self.assertEqual("200", r["code"])
         print(r)
 
+    def test_01100_del_layout_using1(self):
+        """
+        接口名称：删除类型布局
+        接口地址：/proj/basis/$VERSION$/type/layout/{id}
+        """
+        # # 创建布局
+        # layout_id, layout_name = ApiCustomBusinessTypeManager.create_default_layout(self)
+        # 删除布局
+        r = ApiCustomBusinessTypeManager.del_layout_using1(Virtualorg.layout_id)
+        self.assertEqual("200", r["code"])
+        print(r)
 
 if __name__ == '__main__':
     unittest.main()

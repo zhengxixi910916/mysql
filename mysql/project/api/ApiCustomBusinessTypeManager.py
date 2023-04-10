@@ -99,7 +99,7 @@ def update_attr_using(self, update_id, dto, checker=None):
     接口名称：更新属性
     接口地址：/proj/basis/$VERSION$/type/attr/{id}
     """
-    r = RequestService.call_put(apis.put("update_attr_using", update_id), json=dto)
+    r = RequestService.call_put(apis.get("update_attr_using", update_id), json=dto)
 
     self.assertEqual("200", r["code"])
     return r

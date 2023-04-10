@@ -33,7 +33,7 @@ apis = Api({
     "pageProjectUsingGET": "/proj/$VERSION$/pageProject",  # 根据条件查询项目信息列表（不权限控制）
     "addProjectUsingPOST_1": "/proj/$VERSION$/project",  # 保存项目基本信息
     "updateProjectUsingPUT": "/proj/$VERSION$/project",  # 更新项目信息
-    "getBascDataByTypeUsingGET": "/proj/$VERSION$/project/dict",  # 获取数据字典
+    "getBascDataByTypeUsingGET": "/proj/$VERSION$/project/dict/fuzzy/item/list",  # 获取数据字典
     "exportProjectListUsingGET": "/proj/$VERSION$/project/export",  # 导出项目列表数据
     "exportTemplateUsingGET": "/proj/$VERSION$/project/export/template",  # 导出数据模板
     "importProjectUsingPOST": "/proj/$VERSION$/project/import/excel",  # 导入项目基础数据
@@ -488,14 +488,17 @@ def updateProjectUsingPUT(self, project_code, project_id, project_name, checker=
         return r
 
 
-def getBascDataByTypeUsingGET(self, attribute, type, checker=None):
+def getBascDataByTypeUsingGET(self, project_id, checker=None):
     """
     接口名称：获取数据字典
-    接口地址：/proj/$VERSION$/project/dict
+    接口地址：/proj/$VERSION$/project/dict/fuzzy/item/list
     """
     r = RequestService.call_get(apis.get("getBascDataByTypeUsingGET"), params={
-        "attribute": attribute,  # 附加属性 - required: False
-        "type": type,  # 类型 - required: False
+        "fuzzyKey": "",
+        "orderBy":"sort",
+        "sortBy":"asc",
+        "contextId": project_id,
+        "contextType": "Project",
     }, )
     apis.check_success(self, r)
     if checker is not None:

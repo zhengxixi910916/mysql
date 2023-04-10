@@ -135,12 +135,10 @@ class Project(unittest.TestCase):
     def test_0200_getBascDataByTypeUsingGET(self):
         """
         接口名称：获取数据字典
-        接口地址：/proj/$VERSION$/project/dict
+        接口地址：/proj/$VERSION$/project/dict/fuzzy/item/list
         """
         ApiProject.getBascDataByTypeUsingGET(self,
-                                             attribute="lable",
-                                             type="common"
-                                             )
+                                             project_id=Project.project_id)
 
     def test_0210_selectAvlbFieldListUsingGET_2(self):
         """
