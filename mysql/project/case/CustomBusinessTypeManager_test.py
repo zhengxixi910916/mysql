@@ -44,39 +44,39 @@ class Virtualorg(unittest.TestCase):
         接口名称：创建属性
         接口地址：/proj/basis/$VERSION$/type/attr
         """
-        str = int(time.time())
+        time2 = int(time.time())
         # 创建数据库字段
-        data = {
-            "entityAttrs[0].attrName": "xxxx",
-            "entityAttrs[0].attrKey": "ext_xxxx",
+        data1 = {
+            "entityAttrs[0].attrName": "xxxx"+str(time2),
+            "entityAttrs[0].attrKey": "ext_xxxx"+str(time2),
             "entityAttrs[0].attrType": "varchar",
             "entityAttrs[0].typeLength": 32,
             "entityAttrs[0].defaultValue": ""
         }
-        r = ApiCustomBusinessTypeManager.createDatabaseFiled(data)
+        r1 = ApiCustomBusinessTypeManager.createDatabaseFiled(data1)
 
         # 创建属性
-        data = {
-            "code": "xxxxxx",
-            "displayName": "嘻嘻测试属性",
+        data2 = {
+            "code": "xxxxxx"+str(time2),
+            "displayName": "嘻嘻测试属性"+str(time2),
             "paramName": "xxxxxx",
-            "fieldColumn": "ext_xxxx",
+            "fieldColumn": "ext_xxxx"+str(time2),
             "fieldEdit": "",
             "fieldType": "text-input",
             "logicType": 1,
             "defaultField": 0,
             "oper": "like,between,eq",
             "id": "",
-            "name": "xxxxxx",
+            "name": "xxxxxx"+str(time2),
             "businessType": "erd.cloud.issue.dto.EtIssue",
             "typedefId": 4,
             "advancedSearch": 1,
             "typeConfig": '''{"attrType":"base","sort":true,"fieldEdit":"","advancedSearch":true,"mpxIndex":""}'''
         }
-        r = ApiCustomBusinessTypeManager.save_attr_using(data)
-        print(r)
-        Virtualorg.arr_id = r['res']['data']['id']
-        self.assertEqual("200", r["code"])
+        r2 = ApiCustomBusinessTypeManager.save_attr_using(data2)
+        print(r2)
+        Virtualorg.arr_id = r2['res']['data']['id']
+        self.assertEqual("200", r2["code"])
 
     def test_00400_get_attr_using(self):
         """

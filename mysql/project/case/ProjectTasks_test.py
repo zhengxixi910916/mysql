@@ -11,8 +11,8 @@ class ProjectTasks(unittest.TestCase):
     task_id = ''
     plan_data = {
         "name": "AutoPlan",
-        "startDate": "",
-        "finishDate": "",
+        "startDate": time.strftime('%y-%M-%d', time.localtime()),
+        "finishDate": time.strftime('%y-%M-%d', time.localtime()),
         "milestoneFlag": "0",
         "state": "",
         "criticalFlag": "0",

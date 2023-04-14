@@ -594,43 +594,43 @@ def update_state_flow_members(self, checker=None):
     return r['res']["data"]
 
 
-def add_task(self, project_id, startDate=None,  finishDate=None,checker=None):
-    """
-    接口名称：创建任务
-    接口地址：/plan/$VERSION$/task
-    """
-    r = RequestService.call_post(apis.get("add_task"), params={
-        "name": "task_" + time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime()),
-        "startDate": startDate,
-        "finishDate": finishDate,
-        "milestoneFlag": "0",
-        "state": "",
-        "criticalFlag": "0",
-        "canBeCutted": "1",
-        "description": "",
-        "percentComplete": "",
-        "projectId": project_id,
-        "parentId": "",
-        "actualFinishDate": "",
-        "workload": "",
-        "duration": "5",
-        "resAssignments": "MEMBER",
-        "sop": "",
-        "taskInput": "",
-        "taskOutput": "",
-        "fileIds": "",
-        "summaryFlag": "0",
-        "taskMemberList[0].roleKey": "HANDLEPERSON",
-        "taskMemberList[0].userId": "SYS_E39B20EA11E7A81AC85B767C89C1",
-        "taskMemberList[1].roleKey": "IDENTIFY",
-        "taskMemberList[1].userId": "",
-        "labelLinkIds": "",
-        "stageFlag": "1"
-    }, )
-    apis.check_success(self, r)
-    if checker is not None:
-        self.assertEqual(checker, r["res"]["data"])
-    return r['res']["data"]
+# def add_task(self, project_id, startDate=None,  finishDate=None,checker=None):
+#     """
+#     接口名称：创建任务
+#     接口地址：/plan/$VERSION$/task
+#     """
+#     r = RequestService.call_post(apis.get("add_task"), params={
+#         "name": "task_" + time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime()),
+#         "startDate": startDate,
+#         "finishDate": finishDate,
+#         "milestoneFlag": "0",
+#         "state": "",
+#         "criticalFlag": "0",
+#         "canBeCutted": "1",
+#         "description": "",
+#         "percentComplete": "",
+#         "projectId": project_id,
+#         "parentId": "",
+#         "actualFinishDate": "",
+#         "workload": "",
+#         "duration": "5",
+#         "resAssignments": "MEMBER",
+#         "sop": "",
+#         "taskInput": "",
+#         "taskOutput": "",
+#         "fileIds": "",
+#         "summaryFlag": "0",
+#         "taskMemberList[0].roleKey": "HANDLEPERSON",
+#         "taskMemberList[0].userId": "SYS_E39B20EA11E7A81AC85B767C89C1",
+#         "taskMemberList[1].roleKey": "IDENTIFY",
+#         "taskMemberList[1].userId": "",
+#         "labelLinkIds": "",
+#         "stageFlag": "1"
+#     }, )
+#     apis.check_success(self, r)
+#     if checker is not None:
+#         self.assertEqual(checker, r["res"]["data"])
+#     return r['res']["data"]
 
 
 def update_checklist(self, checkid, objectId, state, checker=None):
@@ -906,9 +906,8 @@ def add_task_predecessorLink(self, task_id, task1id, checker=None):
     接口地址：/plan/$VERSION$/task/{id}/predecessorLink
     """
     r = RequestService.call_put(apis.get("add_task_predecessorLink", task_id), json={
-        "predecessorLink": "{\"PredecessorUID\":\"" + task1id + "\",\"Type\":\"1\",\"LinkLag\":\"0\","
-                                                                "\"_index\":\"0\",\"_uid\":\"" + task_id + "\"}",
-        "task_id": task_id
+        "predecessorLink": "{\"PredecessorUID\":\"" + task1id + "\",\"Type\":\"1\",\"LinkLag\":\"0\","                                                                "\"_index\":\"0\",\"_uid\":\"" + task_id + "\"}",
+        "taskId": task_id
     })
     apis.check_success(self, r)
     if checker is not None:
@@ -1274,7 +1273,7 @@ def select_business_table(self, viewid, project_id, mgReqFlag="false", page_inde
     return r
 
 
-def select_business_list(self, viewid, mgReqFlag="true", page_index=1, page_size=20, project_id=None, checker=None):
+def select_business_list(self, view_id, project_id, checker=None):
     """
     接口名称：查询业务数据
     接口地址：/plan/$VERSION$/{viewid}/businesslist
@@ -1283,11 +1282,11 @@ def select_business_list(self, viewid, mgReqFlag="true", page_index=1, page_size
         "Content-Type": "application/json; charset=UTF-8",
         "Authorization": "Bearer " + commonServer.get_token()
     }
-    r = RequestService.call_post(apis.get("select_business_list", viewid), json={
-        "mgReqFlag": mgReqFlag,
-        "pageindex": page_index,
-        "pagesize": page_size,
-        "projectId": project_id
+    r = RequestService.call_post(apis.get("select_business_list", view_id), json={
+        "mgReqFlag": "false",
+        "pageindex": "1",
+        "pagesize": "20",
+        "projectid": project_id
     }, headers=headers)
     apis.check_success(self, r)
     if checker is not None:

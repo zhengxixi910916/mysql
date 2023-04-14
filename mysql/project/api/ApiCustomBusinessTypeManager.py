@@ -369,7 +369,7 @@ def del_layout_using2(self, checker):
 
 def createDatabaseFiled(data):
     host = commonServer.host
-    url = host + "/proj/v1/extfields"
+    url = host + "/issue/v1/extfields"
     headers = commonServer.get_headers()
     headers['Content-Type'] = "application/x-www-form-urlencoded; charset=UTF-8"
     r = requests.request("POST", url=url, headers=headers, data=data)

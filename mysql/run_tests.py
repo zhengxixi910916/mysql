@@ -9,7 +9,7 @@ from unittest import defaultTestLoader
 from erdcloud.HTMLTestRunner import HTMLTestRunner
 
 # 指定测试用例为当前文件夹下的 interface 目录
-test_dir = './project'
+test_dir = '.'
 
 
 def parse_dir(root_dir):

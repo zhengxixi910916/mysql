@@ -30,7 +30,35 @@ class TaskManage(unittest.TestCase):
     sum_id = ""
     working_hour_id = ""
     project_template_id = ""
-    plan_data = ''
+    plan_lists = []
+    plan_data = {
+        "name": "AutoPlan",
+        "startDate": time.strftime('%y-%M-%d', time.localtime()),
+        "finishDate": time.strftime('%y-%M-%d', time.localtime()),
+        "milestoneFlag": "0",
+        "state": "",
+        "criticalFlag": "0",
+        "canBeCutted": "1",
+        "stageFlag": "0",
+        "description": "",
+        "percentComplete": "",
+        "projectId": project_id,
+        "parentId": "",
+        "actualFinishDate": "",
+        "workload": "",
+        "duration": "",
+        "resAssignments": "PM",
+        "sop": "",
+        "taskInput": "",
+        "taskOutput": "",
+        "fileIds": "",
+        "summaryFlag": "0",
+        "taskMemberList[0].roleKey": "HANDLEPERSON",
+        "taskMemberList[0].userId": "SYS_E39B20EA11E7A81AC85B767C89C1",
+        "taskMemberList[1].roleKey": "IDENTIFY",
+        "taskMemberList[1].userId": "",
+        "labelLinkIds": ""
+    }
     @classmethod
     def setUpClass(cls):
         pass
@@ -47,41 +75,10 @@ class TaskManage(unittest.TestCase):
         """
 
         # 新增项目
-        project_name = "project_" + time.strftime('%Y%m%d', time.localtime())
+        project_name = "project_112" + time.strftime('%Y%m%d', time.localtime())
         r = ApiProject.addProjectUsingPOST_1(self, name=project_name)
         print(r)
         TaskManage.project_id = r["id"]
-
-
-        TaskManage.plan_data = {
-            "name": "AutoPlan",
-            "startDate": "",
-            "finishDate": "",
-            "milestoneFlag": "0",
-            "state": "",
-            "criticalFlag": "0",
-            "canBeCutted": "1",
-            "stageFlag": "0",
-            "description": "",
-            "percentComplete": "",
-            "projectId": TaskManage.project_id,
-            "parentId": "",
-            "actualFinishDate": "",
-            "workload": "",
-            "duration": "",
-            "resAssignments": "PM",
-            "sop": "",
-            "taskInput": "",
-            "taskOutput": "",
-            "fileIds": "",
-            "summaryFlag": "0",
-            "taskMemberList[0].roleKey": "HANDLEPERSON",
-            "taskMemberList[0].userId": "SYS_E39B20EA11E7A81AC85B767C89C1",
-            "taskMemberList[1].roleKey": "IDENTIFY",
-            "taskMemberList[1].userId":"",
-            "labelLinkIds": ""
-        }
-
         TaskManage.plan_data['projectId'] = TaskManage.project_id
         add_task_result = ApiProjectTasks.add_task_using_post_1(self, data=TaskManage.plan_data)
         print(add_task_result)
@@ -226,7 +223,7 @@ class TaskManage(unittest.TestCase):
         update_checklist_result = ApiTaskManage.update_checklist(self,
                                                                  TaskManage.checklist_id,
                                                                  TaskManage.task_id,
-                                                                 "1"
+                                                                 "0"
                                                                  )
         print(update_checklist_result)
 
@@ -305,13 +302,6 @@ class TaskManage(unittest.TestCase):
         get_mchart = ApiTaskManage.get_mchart(self, TaskManage.project_id)
         print(get_mchart)
 
-    def test_2800_get_tasks_page(self):
-        """
-        获取项目任务列表（分页）
-        """
-        # /plan/$VERSION$/tasks/page
-        get_tasks_page = ApiTaskManage.get_tasks_page(self, TaskManage.project_id)
-        print(get_tasks_page)
 
     @unittest.skip('接口未使用')
     def test_2900_get_undone_task(self):
@@ -418,9 +408,8 @@ class TaskManage(unittest.TestCase):
         """
         # /plan/$VERSION$/task/{id}/predecessorLink
         ApiTaskManage.add_task_predecessorLink(self,
-                                               TaskManage.copy_task_id,
-                                               TaskManage.task_id,
-
+                                               task1id=TaskManage.copy_task_id,
+                                               task_id=TaskManage.task_id
                                                )
 
     def test_4150_delete_task_predecessor_link(self):
@@ -603,20 +592,6 @@ class TaskManage(unittest.TestCase):
         cut_task_by_ids = ApiTaskManage.cut_task_by_ids(self, TaskManage.task_id)
         print(cut_task_by_ids)
 
-    def test_7300_select_business_list(self):
-        """
-        查询业务数据
-        """
-        # /task/v1/{viewid}/businesslist
-        plan_id_list = []
-        select_business_list = ApiTaskManage.select_business_list(self,
-                                                                  TaskManage.view_id,
-                                                                  TaskManage.project_id
-                                                                  )
-        plan_list_records = select_business_list['res']['data']['records']
-        for i in range(len(plan_list_records)):
-            plan_id_list.append(plan_list_records[i]['id'])
-        TaskManage.plan_id_list = plan_id_list
 
 
     def test_7600_copy_template_task(self):
@@ -624,11 +599,15 @@ class TaskManage(unittest.TestCase):
         接口名称：拷贝项目模版任务数据
         接口地址：/plan/$VERSION$/task/template/copy
         """
-        r = ApiProjectTemplate.addProjectTemplateUsingPOST(self,"创建项目模板XXX",
+        # 创建项目模板
+        r1 = ApiProjectTemplate.addProjectTemplateUsingPOST(self,"创建项目模板XXX",
                                                        project_id=TaskManage.project_id,
                                                        name="Project_Template_" + time.strftime('%H%M%S', time.localtime()))
-        TaskManage.project_template_id = r["id"]
-        ApiTaskManage.copy_template_task(self, project_id=TaskManage.project_id,template_id=TaskManage.project_template_id)
+        TaskManage.project_template_id = r1["id"]
+
+        # 拷贝项目模板任务数据
+        r2 = ApiTaskManage.copy_template_task(self, project_id=TaskManage.project_id,template_id=TaskManage.project_template_id)
+
 
 
     def test_7700_execute_task(self):
@@ -770,7 +749,34 @@ class TaskManage(unittest.TestCase):
         ApiTaskManage.import_business(self,
                                       project_id=TaskManage.project_id)
 
-    def test_9910_delete_task_by_id_list(self):
+    def test_9910_get_tasks_page(self):
+        """
+        获取项目任务列表（分页）
+        """
+        # /plan/$VERSION$/tasks/page
+        get_tasks_page = ApiTaskManage.get_tasks_page(self, TaskManage.project_id)
+        print(get_tasks_page)
+
+    def test_9920_select_business_list(self):
+        """
+        查询业务数据
+        """
+        # /task/v1/{viewid}/businesslist
+        plan_id_list = []
+        select_business_list = ApiTaskManage.select_business_list(self,
+                                                                  view_id=TaskManage.view_id,
+                                                                  project_id=TaskManage.project_id
+                                                                  )
+        print(select_business_list)
+        plan_list_records = select_business_list['res']['data']['records']
+        print(plan_list_records)
+        total = int(select_business_list['res']['data']['total'])
+        print(total)
+        for i in range(0, total):
+            plan_id_list.append(plan_list_records[i]['id'])
+        TaskManage.plan_id_list = plan_id_list
+
+    def test_9930_delete_task_by_id_list(self):
         """
         接口名称：根据ids批量删除任务
         接口地址：/plan/$VERSION$/tasks/{projectId}
@@ -778,7 +784,11 @@ class TaskManage(unittest.TestCase):
         ApiTaskManage.delete_task_by_id_list(self,project_id=TaskManage.project_id, task_id=TaskManage.plan_id_list)
 
 
-    def test_9920_delete_project(self):
+    def test_9940_delete_project(self):
+        # 删除项目模板
+        ApiProjectTemplate.deleteTemplateUsingDELETE(self,
+                                                     id=TaskManage.project_template_id
+                                                     )
         # 删除项目
         ApiProject.deleteProjectUsingDELETE(self, project_id=TaskManage.project_id)
 
