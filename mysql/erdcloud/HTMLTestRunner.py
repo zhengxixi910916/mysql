@@ -856,8 +856,7 @@ class HTMLTestRunner(Template_mixin):
         if (result.success_count + result.failure_count + result.error_count) == 0:
             pass_coverage = 0
         else:
-            pass_coverage = HTMLTestRunner.compute_coverage(result.success_count, (
-                    result.success_count + result.failure_count + result.error_count))
+            pass_coverage = '{:.2f}%'.format(result.success_count/(result.success_count + result.failure_count + result.error_count)*100)
         report = self.REPORT_TMPL % dict(
             test_list=''.join(rows),
             count=str(result.success_count + result.failure_count + result.error_count),
@@ -1014,27 +1013,30 @@ class HTMLTestRunner(Template_mixin):
             apis = Api({
                 "api-docs": '/' + service_alais + '/v2/api-docs'
             })
+
             # 返回该服务的所有接口数和接口列表
-            all_api, all_api_list, ignore_api_count = HTMLTestRunner.get_all_apis_docs(apis, 'api-docs',
-                                                                                       service["ignore_apis"])
+
+            yaoceshi_api_count, all_api_list, ignore_api_count = HTMLTestRunner.get_all_apis_docs(apis, 'api-docs', service["ignore_apis"])
+
             # 未测试接口body
-            not_tested_api = HTMLTestRunner.check_not_test_api(api_list, all_api_list, service["ignore_apis"])
-            # 接口覆盖率
-            api_coverage = HTMLTestRunner.compute_coverage(tested_api_count, all_api)
-            body += str(all_api - tested_api_count)
+            not_tested_api, not_test_api_count = HTMLTestRunner.check_not_test_api(api_list, all_api_list, service["ignore_apis"])
+            print(not_tested_api)
+            # 未测试接口数
+            api_coverage = HTMLTestRunner.compute_coverage(tested_api_count, yaoceshi_api_count)
+            body += str(not_test_api_count)
             body += '</button>'
             body += '<table border="1" id="table' + str(tid2) + '" style="display:none" frame=void>'
             body += not_tested_api
             body += '</table></td>'
 
-            # 拼接覆盖率
+            # 接口覆盖率
             body += '<td>'
             body += api_coverage
             body += '</td></tr>'
 
             tid1 += 2
             tid2 += 2
-            service_map[service_name] = tested_api_count
+            service_map[service_name] = len(api_list)
 
         return self.ENDING_TMPL % {
             "body": body
@@ -1077,30 +1079,56 @@ class HTMLTestRunner(Template_mixin):
         return str(round((tested_api_count / test_all_api * 100), 2)) + '%'
 
     @staticmethod
-    def check_not_test_api(api_list, all_api_list, ignore_apis):
+    def check_not_test_api(api_list, all_api_list, ignore_apis_list):
         """
         检查未测试接口
         :param api_list: 已测试接口 (url-(method))
         :param all_api_list: 所有接口 (url-(method))
         :return: 未测试接口 (url-(method))
         """
+        # not_test_api = ''
+        # all_api_format_list = []
+        # api_format_list = []
+        # ignore_api_format_list = []
+        # for item in all_api_list:
+        #     api = HTMLTestRunner.replace_char(item)
+        #     all_api_format_list.append(api)
+        # for item in ignore_apis:
+        #     api = HTMLTestRunner.replace_char(item)
+        #     ignore_api_format_list.append(api)
+        # for item in api_list:
+        #     api = HTMLTestRunner.replace_char(item)
+        #     api_format_list.append(api)
+        # for format_api in all_api_format_list:
+        #     if (format_api not in api_format_list) and (format_api not in ignore_api_format_list):
+        #         url = format_api.split("-")[0]
+        #         method = format_api.split("-")[1]
+        #         not_test_api += '<tr><td  style="height:25px;">' + method + '：' + url + '</td></tr>'
+        # return not_test_api
+        #
+        # for format_api in ignore_apis_list:
+        #
+        #
+        #     not_test_api += '<tr><td  style="height:25px;">' + format_api + '</td></tr>'
         not_test_api = ''
-        all_api_format_list = []
-        ignore_api_format_list = []
-        for item in all_api_list:
-            api = HTMLTestRunner.replace_char(item)
-            all_api_format_list.append(api)
-        for item in ignore_apis:
-            api = HTMLTestRunner.replace_char(item)
-            ignore_api_format_list.append(api)
-
-        for format_api in all_api_format_list:
-            if format_api not in api_list and format_api not in ignore_api_format_list:
-                url = format_api.split("-")[0]
-                method = format_api.split("-")[1]
-                not_test_api += '<tr><td  style="height:25px;">' + method + '：' + url + '</td></tr>'
-
-        return not_test_api
+        api_url = []
+        all_api_url = []
+        ignore_url = []
+        not_test_urls = []
+        for item1 in all_api_list:
+            api1 = HTMLTestRunner.replace_char(item1)
+            all_api_url.append(api1.split("-")[0])
+        for item2 in api_list:
+            api2 = HTMLTestRunner.replace_char(item2)
+            api_url.append(api2.split("-")[0])
+        for item3 in ignore_apis_list:
+            api3 = HTMLTestRunner.replace_char(item3)
+            ignore_url.append(api3)
+        for not_test_url in all_api_url:
+            if (not_test_url not in api_url) and (not_test_url not in ignore_url):
+                not_test_urls.append(not_test_url)
+                not_test_api += '<tr><td  style="height:25px;">' + not_test_url + '</td></tr>'
+        return not_test_api, len(not_test_urls)
 
     @staticmethod
     def replace_char(api):
@@ -1119,7 +1147,7 @@ class HTMLTestRunner(Template_mixin):
         return api
 
     @staticmethod
-    def get_all_apis_docs(apis, key, ignore_apis=[]):
+    def get_all_apis_docs(apis, key, ignore_apis):
         """
         检查未测试接口
         :param apis: 接口对象
@@ -1139,8 +1167,6 @@ class HTMLTestRunner(Template_mixin):
                 total += 1
         # 忽略的接口数
         ignore_apis_count = len(ignore_apis)
-        # 要测试的接口数量
-        all_api = total - ignore_apis_count
         # all_cnt = 0
         for k, value in paths.items():
             # all_cnt += 1
@@ -1151,7 +1177,9 @@ class HTMLTestRunner(Template_mixin):
             #     continue
             # all_count += 1
             all_api_list.append(k + '-' + method)
-        return all_api, all_api_list, ignore_apis_count
+        # 要测试的接口数量
+        yaoceshi_api_count = len(all_api_list) - ignore_apis_count
+        return yaoceshi_api_count, all_api_list, ignore_apis_count
         # print(all_cnt)
         # return all_count, all_api_list, ignore_api_count
 
